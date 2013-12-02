@@ -1,0 +1,29 @@
+is_master = <%= scope['graylog::server::is_master'] %>
+
+node_id_file =  <%= scope['graylog::server::config_location'] %>/graylog2-server-node-id
+
+password_secret = <%= scope['graylog::server::password_secret'] %>
+root_password_sha2 = <%= scope['graylog::server::root_password_sha2'] %>
+plugin_dir = <%= scope['graylog::server::plugin_location'] %>
+rest_listen_uri = http://<%= scope['graylog::server::rest_listen_uri'] %>
+
+elasticsearch_max_docs_per_index = <%= scope['graylog::server::elasticsearch_max_docs_per_index'] %>
+elasticsearch_index_prefix = <%= scope['graylog::server::elasticsearch_index_prefix'] %>
+elasticsearch_max_number_of_indices = <%= scope['graylog::server::elasticsearch_max_number_of_indices'] %>
+elasticsearch_shards = <%= scope['graylog::server::elasticsearch_shards'] %>
+elasticsearch_replicas = <%= scope['graylog::server::elasticsearch_replicas'] %>
+elasticsearch_cluster_name = graylog2
+
+elasticsearch_discovery_zen_ping_multicast_enabled = <%= scope['graylog::server::elasticsearch_discovery_zen_ping_multicast_enabled'] %>
+elasticsearch_discovery_zen_ping_unicast_hosts = <%= scope['graylog::server::elasticsearch_discovery_zen_ping_unicast_hosts'] %>
+
+mongodb_useauth = <%= scope['graylog::server::mongodb_useauth'] %>
+mongodb_user = <%= scope['graylog::server::mongodb_user'] %>
+mongodb_password = <%= scope['graylog::server::mongodb_password'] %>
+mongodb_host = <%= scope['graylog::server::mongodb_host'] %>
+mongodb_database = <%= scope['graylog::server::mongodb_database'] %>
+mongodb_port = <%= scope['graylog::server::mongodb_port'] %>
+mongodb_max_connections = <%= scope['graylog::server::mongodb_max_connections'] %>
+mongodb_threads_allowed_to_block_multiplier = <%= scope['graylog::server::mongodb_threads_allowed_to_block_multiplier'] %>
+
+

@@ -1,0 +1,90 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          Graylog2 web interface
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts Graylog2 web interface
+# Description:       Starts Graylog2 web interface using start-stop-daemon
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+
+PIDFILE=<%= scope['graylog::server::web_interface_install_location'] %>/RUNNING_PID
+USER=<%= scope['graylog::server::user'] %>
+WEBINTERFACE_BIN=<%= scope['graylog::server::web_interface_install_location'] %>/bin/graylog2-web-interface
+LOG_FILE=<%= scope['graylog::server::web_interface_logfile'] %>
+LOCK_FILE=<%= scope['graylog::server::web_interface_lockfile'] %>
+URL=http://<%= scope['graylog::server::web_interface_address'] %>:<%= scope['graylog::server::web_interface_port'] %>
+start() {
+  echo -n "Starting graylog2 web interface"
+  __pids_var_run "$JAVA" "$PIDFILE"
+  if [[ $? == 0 ]]; then
+    echo " ... already running"
+    return
+  fi
+  runuser -s /bin/bash $USER -c "$WEBINTERFACE_BIN &>>$LOG_FILE &"
+  for i in $(seq 1 30)
+  do
+    curl $URL &> /dev/null
+    if [[ $? == 0 ]]; then
+      STARTED=true
+      break
+    fi
+    sleep 1
+  done
+  if [[ $STARTED == true ]]; then
+    echo_success
+  else
+    echo_failure
+  fi
+  echo
+  RETVAL=$?
+	[ $RETVAL = 0 ] && touch $LOCK_FILE
+  return $RETVAL
+}
+
+stop() {
+  echo -n "Stopping graylog2 web interface"
+  killproc -p $PIDFILE $JAVA
+  RETVAL=$?
+  echo
+  [ $RETVAL = 0 ] && rm -f $LOCK_FILE $PIDFILE
+}
+
+rh_status() {
+  status -p $PIDFILE $JAVA
+  RETVAL=$?
+}
+
+case "$1" in
+  start)
+		start
+		;;
+  stop)
+		stop
+		;;
+  restart)
+		stop
+		sleep 1
+		start
+    ;;
+  status)
+    rh_status
+    ;;
+  *)
+		N=/etc/init.d/$NAME
+    echo "Usage: $N {start|stop|restart}" >&2
+		exit 1
+		;;
+esac
+
+exit $RETVAL
+
+# vim:ft=sh

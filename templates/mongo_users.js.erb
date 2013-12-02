@@ -1,0 +1,6 @@
+<% if @ensure == 'present' -%>
+db.addUser("<%= scope['graylog::server::mongodb_user'] %>", "<%= scope['graylog::server::mongodb_password'] %>", "readWrite");
+<% end -%>
+<% if @ensure == 'absent' -%>
+db.removeUser("<%= scope['graylog::server::mongodb_user'] %>");
+<% end -%>

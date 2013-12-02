@@ -1,0 +1,39 @@
+#! /bin/sh
+
+DOWNLOAD_URL=<%= scope['graylog::server::server_download_url'] %>
+DOWNLOAD_FILE="graylog2-server-<%= scope['graylog::server::version'] %>.tgz"
+TEMPDIR=/tmp
+ARCHIVE_FOLDER="$TEMPDIR/graylog2-server-<%= scope['graylog::server::version'] %>"
+VERSION=<%= scope['graylog::server::version'] %>
+JAR_FILE=<%= scope['graylog::server::jar_file'] %>
+
+
+# Check if the file already exists
+if [ -f $JAR_FILE ]; then
+
+  # The file already exists, checking if it's the version we need
+
+  echo "$JAR_FILE exists, checking version"
+  java -jar $JAR_FILE --version | grep "Graylog2 Server $VERSION"
+  if [[ $? == 0 ]]; then
+    echo "Graylog2 $VERSION already installed"
+    exit 0
+  fi
+
+  # It was not the version we needed
+fi
+
+# Downloading the file
+cd $TEMPDIR
+
+rm -rf $DOWNLOAD_FILE
+
+curl -L $DOWNLOAD_URL -o $DOWNLOAD_FILE
+
+rm -rf $ARCHIVE_FOLDER
+
+tar xfvz $DOWNLOAD_FILE
+
+rm -rf $JARFILE
+
+mv $ARCHIVE_FOLDER/graylog2-server.jar $JAR_FILE

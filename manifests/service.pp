@@ -1,0 +1,3 @@
+class graylog::service {
+
+}
