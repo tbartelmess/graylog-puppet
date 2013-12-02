@@ -46,4 +46,8 @@ class graylog::web {
     mode    => '777'
   }
 
+  service {"graylog2-web-interface":
+    ensure  => running,
+    require => '/etc/init.d/graylog2-web-interface'
+  }
 }

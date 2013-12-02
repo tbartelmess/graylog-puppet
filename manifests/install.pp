@@ -95,6 +95,9 @@ class graylog::install {
       require     => [File[$mongo_users_file],
                       Service['mongod']]
     }
+
+    Class['mongodb'] -> Service['graylog2']
+
   }
   if $graylog::server::configure_elasticsearch {
     class { 'elasticsearch':
@@ -103,5 +106,11 @@ class graylog::install {
         'cluster.name' => 'graylog2',
       }
     }
+    Class['elasticsearch'] -> Service['graylog2']
+  }
+
+  service {'graylog2':
+    ensure => running,
+    require => [File['/etc/init.d/graylog2']]
   }
 }
